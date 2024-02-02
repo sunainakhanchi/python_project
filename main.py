@@ -1,25 +1,40 @@
-bid_finished=False
-empty_dic = {}
-def biding(bidding_record):
-    highest_bid=0
-    winner=""
-    for bidder in bidding_record:
-        bid_amount=bidding_record[bidder]
-        if bid_amount>highest_bid:
-            highest_bid=bid_amount
-            winner=bidder
-    print(f"the winner is {winner} with a bid of {highest_bid}")
-while not bid_finished:
-    name=input("enter the name:\n")
-    bid=int(input(" what is your bid:\n$"))
-    empty_dic[name]=bid
+import time
+from snake import Snake
+from turtle import Turtle ,Screen
+from practice import Food
+from scoreboard import Scoreboard
+turtle=Turtle()
+screen=Screen()
+segments=[]
+snake=Snake()
+food=Food()
+scoreboard=Scoreboard()
+screen.setup(600,600)
+screen.bgcolor("black")
+screen.listen()
+screen.onkey(snake.up,"Up")
+screen.onkey(snake.down,"Down")
+screen.onkey(snake.left,"Left")
+screen.onkey(snake.right,"Right")
 
 
 
-    result=input("enter yes if there are biders or no if there are not\n")
-
-    if result=="NO":
-        bid_finished=True
-        print("game over")
-        biding(empty_dic)
-
+game_is_on=True
+while game_is_on:
+    screen.update()
+    time.sleep(0.1)
+    snake.move()
+    if snake.head.distance(food)<15:
+        food.refresh()
+        snake.extend()
+        scoreboard.score_up()
+    if snake.head.xcor()>280 or snake.head.xcor()<-280 or snake.head.ycor()>280 or snake.head.ycor()<-280:
+        game_is_on=False
+        scoreboard.game_over()
+    for seg in segments:
+        if seg==snake.segments:
+            pass
+        elif snake.head.distance(seg)<10:
+            game_is_on=False
+            scoreboard.game_over()
+screen.exitonclick()
